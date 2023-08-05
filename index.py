@@ -35,6 +35,11 @@ def main():
         fitness = FITNESS
         fitness_params = FITNESS_PARAMS
         genes = GENES
+        benchmark_params = fitness_params
+        benchmark_params['string'] = genes
+    
+    fitness_exec_time = measureExecTime(fitness, **benchmark_params)
+    st.write(fitness_exec_time)
 
 
     ####################################### PARAMS
