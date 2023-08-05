@@ -1,3 +1,5 @@
+import re
+
 TEST_CASES = {'7{M2Zk7&N': False,
  "T:A'Y\\.": False,
  '8T*sWBr(X5x-P': False,
