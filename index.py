@@ -3,6 +3,7 @@ import plotly.express as px
 import pandas as pd
 from model import GeneticAlgorithm
 from example import FITNESS, FITNESS_PARAMS, GENES
+from benchmarking import *
 
 def main():
 
@@ -51,7 +52,7 @@ def main():
         st.write('Min and max chromosome length')
         chromosomeMinLength = st.slider(label = 'Min Chromosome Length', min_value = 1, max_value = 100, value = 1)
         chromosomeMaxLength = st.slider(label = 'Max Chromosome Length', min_value = 1, max_value = 100, value = 30)
-        possible_fenotypes = calculateFenotypes(genes, chromosomeMinLength, chromosomeMaxLength)
+        possible_fenotypes = calculatePhenotypes(genes, chromosomeMinLength, chromosomeMaxLength)
         st.write(f'Possible unique individuals: {possible_fenotypes}')
     
     with st.expander(label = 'Selection Strategy'):
@@ -82,28 +83,6 @@ def main():
         gen.train(n_generations = n_generations)
 
         st.dataframe(data = gen.historyToPandas())
-
-    ################################################## BENCHMARKING
-
-def calculateFenotypes(genes: str, min_length: int, max_length: int):
-    unique_genes = set(genes)
-    n_unique_genes = len(unique_genes)
-
-    n_fenotypes = 0
-    for length in range(min_length, max_length + 1):
-        n_fenotypes += powerOf(n_unique_genes, length)
-    
-    return n_fenotypes
-
-def powerOf(base, exponent):
-    result = 1
-    for _ in range(exponent):
-        result *= base
-    return result
-
-
-
-
 
 if __name__ == '__main__':
     main()
