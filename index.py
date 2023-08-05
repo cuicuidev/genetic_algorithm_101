@@ -6,9 +6,9 @@ from example import FITNESS, FITNESS_PARAMS, GENES
 
 def main():
 
-    st.title("Let's learn genetic algorithms")
+    st.title("Genetic algorithms 101")
 
-    st.header("Frist, let'ss define a fitness function!")
+    st.header("Frist, let's define a fitness function!")
     st.write("The function must have at least one parameter called 'string' and the output must be a float between -1 and 1.")
     st.write('This is a predefined example fitness function that takes as an input the previously mentioned string, and also a test_cases dictionary. \
              The function returns the ratio of test cases passed over all test cases. \
@@ -27,16 +27,33 @@ def main():
     fitness_function_boilerplate = 'def fitness(string: str):\n\
     # your code\n\n\
     return score'
-    st.text_area(label = 'custom code', placeholder = fitness_function_boilerplate, label_visibility = 'collapsed', height = 120)
+    with st.expander(label = 'Open text field'):
+        st.selectbox(label = 'language', options = ['python'])
+        st.text_area(label = 'custom code', placeholder = fitness_function_boilerplate, label_visibility = 'collapsed', height = 300)
 
-    with st.expander(label = 'Parameters'):
-        populationSize = st.slider(label = 'Population Size', min_value = 10, max_value = 10_000, value = 1_000)
+
+    ####################################### PARAMS
+    st.write("Now, let's define some basic algorithm parameters!")
+
+    with st.expander(label = 'Population Size'):
+        st.write('This parameter defines how large the population must be. As the population increases, \
+                                   so does the model performance, but the training time also grows large.')
+        populationSize = st.slider(label = 'size',
+                                   min_value = 10,
+                                   max_value = 10_000,
+                                   value = 1_000)
+        
+    with st.expander(label = 'Chromosome length'):
+        st.write('Min and max chromosome length')
         chromosomeMinLength = st.slider(label = 'Min Chromosome Length', min_value = 1, max_value = 100, value = 1)
         chromosomeMaxLength = st.slider(label = 'Max Chromosome Length', min_value = 1, max_value = 100, value = 30)
+    
+    with st.expander(label = 'Selection Strategy'):
         selectionStrategyStrategy = st.selectbox(label = 'Selection Strategy', options = ['tournament'])
         selectionStrategyParams = {'k' : 5}
         selectionStrategy = {'strategy' : selectionStrategyStrategy, 'params' : selectionStrategyParams}
 
+    with st.expander(label = 'Mutation Strategy'):
         mutationStrategyStrategy = st.selectbox(label = 'Mutation Strategy', options = ['pop'])
         mutation_rate = st.slider(label = 'Mutation Rate', min_value = 0.0, max_value = 1.0, value = 0.05)
         mutationStrategyParams = {'mutation_rate' : mutation_rate}
@@ -51,7 +68,7 @@ def main():
                   'selectionStrategy' : selectionStrategy,
                   'mutationStrategy' : mutationStrategy,
                   }
-        
+    with st.expander(label = 'Number of generations'):
         n_generations = st.slider(label = 'Generations', min_value = 1, max_value = 1000, value = 100)
         
     
