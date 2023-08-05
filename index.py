@@ -1,7 +1,7 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
-from generalized import GeneticAlgorithm
+from model import GeneticAlgorithm
 from example import FITNESS, FITNESS_PARAMS, GENES
 
 def main():
