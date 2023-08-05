@@ -4,7 +4,7 @@ import pandas as pd
 
 class GeneticAlgorithm:
 
-    def __init__(self, fitness: Callable[str, float], fitness_params: dict, genes: str):
+    def __init__(self, fitness: Callable[..., float], fitness_params: dict, genes: str):
         # constructor params
         self.fitness = fitness # fitness function takes in a string and returns a float between -1 and 1
         self.fitness_params = fitness_params # dictionary that resembles the parameters that might be passed down to the fitness function
@@ -113,7 +113,7 @@ class GeneticAlgorithm:
         child2 = []
         parent1_ = [x for x in parent1]
         parent2_ = [x for x in parent2]
-        for gen1, gen2 in zip(parent1_, parent2_):
+        for gen1, gen2 in zip(parent1_, parent2_): #TODO: take into account the length of both parents!!!
             if random.randint(0, 1):
                 child1.append(gen1)
                 child2.append(gen2)
