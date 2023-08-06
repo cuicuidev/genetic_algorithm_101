@@ -13,7 +13,7 @@ GENES = ''.join([chr(x) for x in range(32,126)])
 
 SELECTION_STRATEGIES = {'Tournament' : TournamentSelection}
 CROSSOVER_STRATEGIES = {'Binary Uniform' : BinaryUniformCrossover}
-MUTATION_STRATEGIES = {'Pop' : None}
+MUTATION_STRATEGIES = {'Pop' : PopMutation}
 REPLACEMENT_STRATEGIES = {'Total' : None}
 
 
@@ -85,8 +85,8 @@ def aSimpleExamplePage():
 
         mutation_rate = st.slider(label = 'Mutation Rate', min_value = 0.0, max_value = 1.0, value = 0.05)
 
-        mutationStrategyParams = {'mutation_rate' : mutation_rate}
-        mutationStrategy = mutationStrategyStrategy#(**mutationStrategyParams)
+        mutationStrategyParams = {'mutation_rate' : mutation_rate, 'chromosome_min_length' : chromosomeMinLength}
+        mutationStrategy = mutationStrategyStrategy(**mutationStrategyParams)
 
     with st.expander(label = 'Replacement Strategy'):
         replacementStrategyStrategy = st.selectbox(label = 'Replacement Strategy', options = list(REPLACEMENT_STRATEGIES.keys()))

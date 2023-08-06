@@ -84,23 +84,8 @@ class GeneticAlgorithm:
     
     ################################### MUTATION
     
-    def _mutation(self, children):
-        
-        mutated_children = []
-        
-        for child in children:
-            mutated_children.append(self._popMutation(child, **self.mutationStrategy['params']))
-        
-        return mutated_children
-    
-    def _popMutation(self, child, mutation_rate):
-        max_index = len(child) - 1
-        if random.random() < mutation_rate:
-            index = random.randint(0, max_index)
-            mutated_child = child[:index] + child[index + 1:]
-            return mutated_child if len(mutated_child) > self.chromosomeMinLength else child
-        return child
-            
+    def _mutation(self):
+        return self.mutationStrategy.apply(self._crossover())
 
     ################################### REPLACEMENT
     
@@ -132,7 +117,7 @@ class GeneticAlgorithm:
     
     def train(self, n_generations):
         for n in range(n_generations):
-            self._replacement(self._mutation(self._crossover()))
+            self._replacement(self._mutation())
             
             self._sortPopulation()
             
