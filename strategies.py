@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Self
 import random
 
 class Strategy(ABC):
@@ -9,19 +8,16 @@ class Strategy(ABC):
         pass
 
 class SelectionStrategy(Strategy):
+    pass
 
-    @abstractmethod
-    def apply(self, **kwargs):
-        pass
+class CrossoverStrategy(Strategy):
+    pass
 
-# class CrossoverStrategy(Strategy):
-#     pass
+class MutationStrategy(Strategy):
+    pass
 
-# class MutationStrategy(Strategy):
-#     pass
-
-# class ReplacementStrategy(Strategy):
-#     pass
+class ReplacementStrategy(Strategy):
+    pass
 
 ########################################
 
@@ -59,8 +55,40 @@ class TournamentSelection(SelectionStrategy):
                 best_score = score
         return best
 
-# class BinaryUniformCrossover(CrossoverStrategy):
-#     pass
+class BinaryUniformCrossover(CrossoverStrategy):
+    
+    def __init__(self, anti_twins = True):
+        self.anti_twins = anti_twins
+
+    def apply(self, parents):
+        return self._getChildren(parents)
+    
+    def _getChildren(self, parents):
+        children = []
+        for parent1, parent2 in parents:
+            children.extend(self._uniformBinary(parent1, parent2))
+        return children
+    
+    def _uniformBinary(self, parent1, parent2):
+        child1 = []
+        if self.anti_twins:
+            child2 = []
+        parent1_ = [x for x in parent1]
+        parent2_ = [x for x in parent2]
+        for gen1, gen2 in zip(parent1_, parent2_): #TODO: take into account the length of both parents!!!
+            if random.randint(0, 1):
+                child1.append(gen1)
+                if self.anti_twins:
+                    child2.append(gen2)
+            else:
+                child1.append(gen2)
+                if self.anti_twins:
+                    child2.append(gen1)
+        child1 = ''.join(child1)
+        if self.anti_twins:
+            child2 = ''.join(child2)
+
+        return [child1, child2] if self.anti_twins else [child1]
 
 # class PopMutation(MutationStrategy):
 #     pass

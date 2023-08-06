@@ -75,34 +75,13 @@ class GeneticAlgorithm:
     ################################### SELECTION
         
     def _selection(self):
-        
-        parents = self.selectionStrategy.apply(self.currentPopulation)
-            
-        return parents
+        return self.selectionStrategy.apply(self.currentPopulation)
+    
     ################################### CROSSOVER
         
-    def _crossover(self, parents):
-        children = []
-        for parent1, parent2 in parents:
-            children.extend(self._uniformBinaryCrossover(parent1, parent2))
-        return children
+    def _crossover(self):
+        return self.crossoverStrategy.apply(self._selection())
     
-    def _uniformBinaryCrossover(self, parent1, parent2):
-        child1 = []
-        child2 = []
-        parent1_ = [x for x in parent1]
-        parent2_ = [x for x in parent2]
-        for gen1, gen2 in zip(parent1_, parent2_): #TODO: take into account the length of both parents!!!
-            if random.randint(0, 1):
-                child1.append(gen1)
-                child2.append(gen2)
-            else:
-                child1.append(gen2)
-                child2.append(gen1)
-        child1 = ''.join(child1)
-        child2 = ''.join(child2)
-
-        return [child1, child2]
     ################################### MUTATION
     
     def _mutation(self, children):
@@ -153,7 +132,7 @@ class GeneticAlgorithm:
     
     def train(self, n_generations):
         for n in range(n_generations):
-            self._replacement(self._mutation(self._crossover(self._selection())))
+            self._replacement(self._mutation(self._crossover()))
             
             self._sortPopulation()
             

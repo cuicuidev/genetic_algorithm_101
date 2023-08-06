@@ -12,7 +12,7 @@ GENES = ''.join([chr(x) for x in range(32,126)])
 
 
 SELECTION_STRATEGIES = {'Tournament' : TournamentSelection}
-CROSSOVER_STRATEGIES = {'BinaryUniform' : None}
+CROSSOVER_STRATEGIES = {'Binary Uniform' : BinaryUniformCrossover}
 MUTATION_STRATEGIES = {'Pop' : None}
 REPLACEMENT_STRATEGIES = {'Total' : None}
 
@@ -69,9 +69,15 @@ def aSimpleExamplePage():
         selectionStrategy = selectionStrategyStrategy(**selectionStrategyParams)
 
     with st.expander(label = 'Crossover Strategy'):
-        crossoverStrategyStrategy = '_'.join(st.selectbox(label = 'Crossover Strategy', options = ['Binary Uniform']).split()).lower()
-        crossoverStrategyParams = {}
-        crossoverStrategy = {'strategy' : crossoverStrategyStrategy, 'params' : crossoverStrategyParams}
+
+        crossoverStrategyStrategy = st.selectbox(label = 'Crossover Strategy', options = ['Binary Uniform'])
+        crossoverStrategyStrategy = CROSSOVER_STRATEGIES[crossoverStrategyStrategy]
+
+        binary_uniform_anti_twins = st.radio(label = 'anti_twins', options = [True, False])
+
+        crossoverStrategyParams = {'anti_twins' : binary_uniform_anti_twins}
+
+        crossoverStrategy = crossoverStrategyStrategy(**crossoverStrategyParams)
 
     with st.expander(label = 'Mutation Strategy'):
         mutationStrategyStrategy = '_'.join(st.selectbox(label = 'Mutation Strategy', options = ['Pop']).split()).lower()
@@ -83,6 +89,7 @@ def aSimpleExamplePage():
                 'chromosomeMinLength' : chromosomeMinLength,
                 'chromosomeMaxLength' : chromosomeMaxLength,
                 'selectionStrategy' : selectionStrategy,
+                'crossoverStrategy' : crossoverStrategy,
                 'mutationStrategy' : mutationStrategy,
                 }
     with st.expander(label = 'Number of generations'):
