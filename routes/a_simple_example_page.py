@@ -14,7 +14,7 @@ GENES = ''.join([chr(x) for x in range(32,126)])
 SELECTION_STRATEGIES = {'Tournament' : TournamentSelection}
 CROSSOVER_STRATEGIES = {'Binary Uniform' : BinaryUniformCrossover}
 MUTATION_STRATEGIES = {'Pop' : PopMutation}
-REPLACEMENT_STRATEGIES = {'Total' : None}
+REPLACEMENT_STRATEGIES = {'Total' : TotalReplacement}
 
 
 def aSimpleExamplePage():
@@ -95,7 +95,7 @@ def aSimpleExamplePage():
         #PARAMS
 
         replacementStrategyParams = {}
-        replacementStrategy = replacementStrategyStrategy#(**replacementStrategyParams)
+        replacementStrategy = replacementStrategyStrategy(**replacementStrategyParams)
 
     params = {'populationSize' : populationSize,
                 'chromosomeMinLength' : chromosomeMinLength,

@@ -72,28 +72,19 @@ class GeneticAlgorithm:
         self.currentPopulation = list(sorted_population)
         self.currentScores = list(sorted_fitness_scores)
         
-    ################################### SELECTION
-        
+    ################################### MAIN ALGORITHM LOGIC
+
     def _selection(self):
         return self.selectionStrategy.apply(self.currentPopulation)
     
-    ################################### CROSSOVER
-        
     def _crossover(self):
         return self.crossoverStrategy.apply(self._selection())
     
-    ################################### MUTATION
-    
     def _mutation(self):
         return self.mutationStrategy.apply(self._crossover())
-
-    ################################### REPLACEMENT
     
-    def _replacement(self, children):
-        self._totalReplacement(children)
-        
-    def _totalReplacement(self, children):
-        self.currentPopulation = children
+    def _replacement(self):
+        self.currentPopulation = self.replacementStrategy.apply(self.currentPopulation, self._mutation())
     
     ###################################
     
@@ -117,7 +108,7 @@ class GeneticAlgorithm:
     
     def train(self, n_generations):
         for n in range(n_generations):
-            self._replacement(self._mutation())
+            self._replacement()
             
             self._sortPopulation()
             

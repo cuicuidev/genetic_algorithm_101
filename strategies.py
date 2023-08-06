@@ -113,5 +113,14 @@ class PopMutation(MutationStrategy):
             return mutated_child if len(mutated_child) > self.chromosome_min_length else child
         return child
 
-# class CompleteReplacement(ReplacementStrategy):
-#     pass
+class TotalReplacement(ReplacementStrategy):
+    
+    def __init__(self):
+        pass
+
+    def apply(self, population, children):
+        return self._totalReplacement(population, children)
+    
+    def _totalReplacement(self, population, children):
+        population = children
+        return population
