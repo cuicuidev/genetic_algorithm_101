@@ -1,5 +1,3 @@
-import re
-
 TEST_CASES = {'7{M2Zk7&N': False,
  "T:A'Y\\.": False,
  '8T*sWBr(X5x-P': False,
@@ -319,18 +317,3 @@ TEST_CASES = {'7{M2Zk7&N': False,
  '{_&G5j\\': False,
  'U&_tXkm8Rin': False,
  '+OF\'ig-}"K0V49l': False,}
-
-FITNESS_PARAMS = {'test_cases' : TEST_CASES}
-
-GENES = ''.join([chr(x) for x in range(32,126)])
-
-def FITNESS(string, test_cases):
-    iters = len(test_cases)
-    
-    score = 0
-    try:
-        for key, value in test_cases.items():
-            score += int(bool(re.match(string, key)) == value)
-    except:
-        return -1
-    return score / iters
