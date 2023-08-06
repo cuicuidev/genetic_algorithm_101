@@ -76,30 +76,9 @@ class GeneticAlgorithm:
         
     def _selection(self):
         
-        parents = []
-        for i in range(len(self.currentPopulation)//2):
-            parent1, parent2 = self._tournamentSelection(**self.selectionStrategy['params'])
-            parents.append((parent1, parent2))
+        parents = self.selectionStrategy.apply(self.currentPopulation)
             
         return parents
-    
-    def _getParentTournament(self, k):
-        sample = random.sample(self.currentPopulation, k)
-        
-        best = sample[0]
-        best_score = self.fitness(string = best, **self.fitness_params)
-        for individual in sample:
-            score = self.fitness(string = individual, **self.fitness_params)
-            if score > best_score:
-                best = individual
-                best_score = score
-        return best
-    
-    def _tournamentSelection(self, k):
-        parent1 = self._getParentTournament(k)
-        parent2 = self._getParentTournament(k)
-        return parent1, parent2
-    
     ################################### CROSSOVER
         
     def _crossover(self, parents):

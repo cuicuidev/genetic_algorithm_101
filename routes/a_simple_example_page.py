@@ -4,10 +4,18 @@ from model import GeneticAlgorithm
 from benchmarking import *
 from test_cases import TEST_CASES
 from example_fitness import fitness
+from strategies import *
 
 FITNESS_PARAMS = {'test_cases' : TEST_CASES}
 
 GENES = ''.join([chr(x) for x in range(32,126)])
+
+
+SELECTION_STRATEGIES = {'Tournament' : TournamentSelection}
+CROSSOVER_STRATEGIES = {'BinaryUniform' : None}
+MUTATION_STRATEGIES = {'Pop' : None}
+REPLACEMENT_STRATEGIES = {'Total' : None}
+
 
 def aSimpleExamplePage():
 
@@ -49,12 +57,24 @@ def aSimpleExamplePage():
         st.write(f'Possible unique individuals: {possible_fenotypes}')
     
     with st.expander(label = 'Selection Strategy'):
-        selectionStrategyStrategy = st.selectbox(label = 'Selection Strategy', options = ['tournament'])
-        selectionStrategyParams = {'k' : 5}
-        selectionStrategy = {'strategy' : selectionStrategyStrategy, 'params' : selectionStrategyParams}
+
+        selectionStrategyStrategy = st.selectbox(label = 'Selection Strategy', options = ['Tournament'])
+        selectionStrategyStrategy = SELECTION_STRATEGIES[selectionStrategyStrategy]
+
+        tournament_k_param = st.slider(label = 'k', min_value = 1, max_value = populationSize//4, value = populationSize//40 + 1)
+        tournament_total_pairs = st.slider(label = 'total_pairs', min_value = 1, max_value = populationSize*4, value = populationSize)
+
+        selectionStrategyParams = {'k' : tournament_k_param, 'fitness' : fitness, 'fitness_params' : FITNESS_PARAMS, 'total_pairs' : tournament_total_pairs}
+        
+        selectionStrategy = selectionStrategyStrategy(**selectionStrategyParams)
+
+    with st.expander(label = 'Crossover Strategy'):
+        crossoverStrategyStrategy = '_'.join(st.selectbox(label = 'Crossover Strategy', options = ['Binary Uniform']).split()).lower()
+        crossoverStrategyParams = {}
+        crossoverStrategy = {'strategy' : crossoverStrategyStrategy, 'params' : crossoverStrategyParams}
 
     with st.expander(label = 'Mutation Strategy'):
-        mutationStrategyStrategy = st.selectbox(label = 'Mutation Strategy', options = ['pop'])
+        mutationStrategyStrategy = '_'.join(st.selectbox(label = 'Mutation Strategy', options = ['Pop']).split()).lower()
         mutation_rate = st.slider(label = 'Mutation Rate', min_value = 0.0, max_value = 1.0, value = 0.05)
         mutationStrategyParams = {'mutation_rate' : mutation_rate}
         mutationStrategy = {'strategy' : mutationStrategyStrategy, 'params' : mutationStrategyParams}
