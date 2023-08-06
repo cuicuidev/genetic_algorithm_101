@@ -20,15 +20,9 @@ def main():
         "About": aboutPage
     }
 
-    # List of page names for the sidebar
-    page_list = list(pages.keys())
+    page_name = st.sidebar.selectbox(label = "Menu", options = list(pages.keys()), index = 0)
 
-    # Let user select the page from the sidebar
-    page_name = st.sidebar.selectbox(label="Menu", options=page_list, index=0)
-
-    # Display the selected page
-    page_function = pages[page_name]
-    page_function()
+    pages[page_name]()
 
 if __name__ == '__main__':
     main()

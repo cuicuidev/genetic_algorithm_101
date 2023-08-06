@@ -87,9 +87,9 @@ class GeneticAlgorithm:
         sample = random.sample(self.currentPopulation, k)
         
         best = sample[0]
-        best_score = self.fitness(best, **self.fitness_params)
+        best_score = self.fitness(string = best, **self.fitness_params)
         for individual in sample:
-            score = self.fitness(individual, **self.fitness_params)
+            score = self.fitness(string = individual, **self.fitness_params)
             if score > best_score:
                 best = individual
                 best_score = score
