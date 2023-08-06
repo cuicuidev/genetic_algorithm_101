@@ -58,7 +58,7 @@ def aSimpleExamplePage():
     
     with st.expander(label = 'Selection Strategy'):
 
-        selectionStrategyStrategy = st.selectbox(label = 'Selection Strategy', options = ['Tournament'])
+        selectionStrategyStrategy = st.selectbox(label = 'Selection Strategy', options = list(SELECTION_STRATEGIES.keys()))
         selectionStrategyStrategy = SELECTION_STRATEGIES[selectionStrategyStrategy]
 
         tournament_k_param = st.slider(label = 'k', min_value = 1, max_value = populationSize//4, value = populationSize//40 + 1)
@@ -70,7 +70,7 @@ def aSimpleExamplePage():
 
     with st.expander(label = 'Crossover Strategy'):
 
-        crossoverStrategyStrategy = st.selectbox(label = 'Crossover Strategy', options = ['Binary Uniform'])
+        crossoverStrategyStrategy = st.selectbox(label = 'Crossover Strategy', options = list(CROSSOVER_STRATEGIES.keys()))
         crossoverStrategyStrategy = CROSSOVER_STRATEGIES[crossoverStrategyStrategy]
 
         binary_uniform_anti_twins = st.radio(label = 'anti_twins', options = [True, False])
@@ -80,10 +80,22 @@ def aSimpleExamplePage():
         crossoverStrategy = crossoverStrategyStrategy(**crossoverStrategyParams)
 
     with st.expander(label = 'Mutation Strategy'):
-        mutationStrategyStrategy = '_'.join(st.selectbox(label = 'Mutation Strategy', options = ['Pop']).split()).lower()
+        mutationStrategyStrategy = st.selectbox(label = 'Mutation Strategy', options = list(MUTATION_STRATEGIES.keys()))
+        mutationStrategyStrategy = MUTATION_STRATEGIES[mutationStrategyStrategy]
+
         mutation_rate = st.slider(label = 'Mutation Rate', min_value = 0.0, max_value = 1.0, value = 0.05)
+
         mutationStrategyParams = {'mutation_rate' : mutation_rate}
-        mutationStrategy = {'strategy' : mutationStrategyStrategy, 'params' : mutationStrategyParams}
+        mutationStrategy = mutationStrategyStrategy#(**mutationStrategyParams)
+
+    with st.expander(label = 'Replacement Strategy'):
+        replacementStrategyStrategy = st.selectbox(label = 'Replacement Strategy', options = list(REPLACEMENT_STRATEGIES.keys()))
+        replacementStrategyStrategy = REPLACEMENT_STRATEGIES[replacementStrategyStrategy]
+
+        #PARAMS
+
+        replacementStrategyParams = {}
+        replacementStrategy = replacementStrategyStrategy#(**replacementStrategyParams)
 
     params = {'populationSize' : populationSize,
                 'chromosomeMinLength' : chromosomeMinLength,
@@ -91,6 +103,7 @@ def aSimpleExamplePage():
                 'selectionStrategy' : selectionStrategy,
                 'crossoverStrategy' : crossoverStrategy,
                 'mutationStrategy' : mutationStrategy,
+                'replacementStrategy' : replacementStrategy,
                 }
     with st.expander(label = 'Number of generations'):
         n_generations = st.slider(label = 'Generations', min_value = 1, max_value = 1000, value = 100)
