@@ -51,26 +51,20 @@ def geneticAlgorithmsPage():
 
     st.markdown(welcome)
 
-    initialization_strategy_selector = InitializationSelector(GENES, INITIALIZATIONS_STRATEGIES)
-    initialization_strategy = initialization_strategy_selector.render()
+    initialization_strategy = InitializationSelector(GENES, INITIALIZATIONS_STRATEGIES).render()
 
     min_population_size = initialization_strategy.min_population_size
     max_population_size = initialization_strategy.max_population_size
     min_chromosome_len = initialization_strategy.min_chromosome_length
     max_chromosome_len = initialization_strategy.max_chromosome_length
 
-    st.markdown("##### Selection strategy")
-    selection_strategy_selector = SelectionSelector(fitness, FITNESS_PARAMS, min_population_size, SELECTION_STRATEGIES)
-    selection_strategy = selection_strategy_selector.render()
+    selection_strategy = SelectionSelector(fitness, FITNESS_PARAMS, min_population_size, SELECTION_STRATEGIES).render()
 
-    st.markdown("##### Crossover strategy")
-    crossover_strategy = crossoverStrategySelector(CROSSOVER_STRATEGIES)
+    crossover_strategy = CrossoverSelector(CROSSOVER_STRATEGIES).render()
 
-    st.markdown("##### Mutation strategy")
-    mutation_strategy = mutationStrategySelector(MUTATION_STRATEGIES, min_chromosome_len, max_chromosome_len, GENES)
+    mutation_strategy = MutationSelector(GENES, min_chromosome_len, MUTATION_STRATEGIES).render()
 
-    st.markdown("##### Replacement strategy")
-    replacement_strategy = replacementStrategySelector(REPLACEMENT_STRATEGIES)
+    replacement_strategy = ReplacementSelector(REPLACEMENT_STRATEGIES).render()
 
     model_params = {'initializationStrategy' : initialization_strategy,
             'selectionStrategy' : selection_strategy,
@@ -78,8 +72,7 @@ def geneticAlgorithmsPage():
             'mutationStrategy' : mutation_strategy,
             'replacementStrategy' : replacement_strategy,
             }
-    
-    st.markdown("##### End condition")
+
     with st.expander(label = 'Number of generations'):
         n_generations = st.slider(label = 'Generations', min_value = 1, max_value = 1000, value = 100)
 

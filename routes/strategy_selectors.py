@@ -1,68 +1,9 @@
 import streamlit as st
 from abc import ABC
 
-def crossoverStrategySelector(crossover_strategies):
-    with st.expander(label = 'Crossover'):
-        crossover_option = st.selectbox(label = 'Select strategy', options = list(crossover_strategies.keys()))
-        crossover_strategy = crossover_strategies[crossover_option]
-
-        if crossover_option == 'Uniform':
-            binary = st.radio(label = 'Binary', options = [True, False])
-            crossover_params = {'binary' : binary}
-        
-        if crossover_option == 'One Point':
-            crossover_params = {}
-
-        if crossover_option == 'Two Points':
-            crossover_params = {}
-
-        crossover_strategy = crossover_strategy(**crossover_params)
-
-    return crossover_strategy
-
-def mutationStrategySelector(mutation_strategies, chromosome_min_length, chromosome_max_length, gene_pool):
-    with st.expander(label = 'Mutation'):
-        mutation_option = st.selectbox(label = 'Select strategy', options = list(mutation_strategies.keys()))
-        mutation_strategy = mutation_strategies[mutation_option]
-
-        mutation_rate = st.slider(label = 'Mutation rate', min_value = 0.0, max_value = 1.0, step = 0.001, value = 0.05)
-        severeness = st.slider(label = 'Severeness', min_value = 0.0, max_value = 1.0, step = 0.001, value = 0.5)
-
-        if mutation_option == 'Delete':
-            mutation_params = {'chromosome_min_length' : chromosome_min_length}
-
-        if mutation_option == 'Flip':
-            mutation_params = {'gene_pool' : gene_pool}
-
-        if mutation_option == 'Swap':
-            mutation_params = {}
-
-        if mutation_option == 'Inverse':
-            mutation_params = {}
-        
-        mutation_params['mutation_rate'] = mutation_rate
-        mutation_params['severeness'] = severeness
-
-        mutation_strategy = mutation_strategy(**mutation_params)
-        
-        
-
-    return mutation_strategy
-
-def replacementStrategySelector(replacement_strategies):
-    with st.expander(label = 'Replacement'):
-        replacement_option = st.selectbox(label = 'Select strategy', options = list(replacement_strategies.keys()))
-        replacement_strategy = replacement_strategies[replacement_option]
-
-        replacement_params = {}
-        replacement_strategy = replacement_strategy(**replacement_params)
-
-    return replacement_strategy
-
-
 class StrategySelector(ABC):
     
-    def __init__(self, strategies, descriptions, expander, expanded, label):
+    def __init__(self, strategies, descriptions = True, expander = True, expanded = False, label = 'None'):
         self.strategies = strategies
         self.descriptions = descriptions
         self.expander = expander
@@ -148,11 +89,61 @@ class SelectionSelector(StrategySelector):
         return strategy
 
 class CrossoverSelector(StrategySelector):
-    pass
+
+    def __init__(self, strategies, descriptions = True, expander = True, expanded = False, label = 'Crossover'):
+        super().__init__(strategies, descriptions, expander, expanded, label)
+
+
+    def _selector(self):
+        option = st.selectbox(label = 'Select strategy', options = list(self.strategies.keys()))
+        strategy = self.strategies[option]
+
+        params = {}
+
+        if option == 'Uniform':
+            binary = st.radio(label = 'Binary', options = [True, False], horizontal = True)
+            params['binary'] = binary
+
+        strategy = strategy(**params)
+
+        return strategy
 
 class MutationSelector(StrategySelector):
-    pass
+
+    def __init__(self, gene_pool, min_chromosome_length, strategies, descriptions = True, expander = True, expanded = False, label = 'Mutation'):
+        super().__init__(strategies, descriptions, expander, expanded, label)
+        self.gene_pool = gene_pool
+        self.min_chromosome_length = min_chromosome_length
+    
+    def _selector(self):
+        option = st.selectbox(label = 'Select strategy', options = list(self.strategies.keys()))
+        strategy = self.strategies[option]
+
+        mutation_rate = st.slider(label = 'Mutation rate', min_value = 0.0, max_value = 1.0, step = 0.001, value = 0.05)
+        severeness = st.slider(label = 'Severeness', min_value = 0.0, max_value = 1.0, step = 0.001, value = 0.5)
+
+        params = {'mutation_rate' : mutation_rate, 'severeness' : severeness}
+
+        if option == 'Delete':
+            params['chromosome_min_length'] = self.min_chromosome_length
+
+        if option == 'Flip':
+            params['gene_pool'] = self.gene_pool
+
+        strategy = strategy(**params)
+        return strategy
 
 class ReplacementSelector(StrategySelector):
-    pass
+
+    def __init__(self, strategies, descriptions = True, expander = True, expanded = False, label = 'Replacement'):
+        super().__init__(strategies, descriptions, expander, expanded, label)
+
+    def _selector(self):
+        option = st.selectbox(label = 'Select strategy', options = list(self.strategies.keys()))
+        strategy = self.strategies[option]
+
+        params = {}
+        strategy = strategy(**params)
+
+        return strategy
 
