@@ -29,7 +29,9 @@ from test_cases import TEST_CASES
 ###################3
 
 def fitness(string):
-    return int(string)
+    max_length = 100
+    max_ = int('9'*max_length)
+    return int(string) / max_
 
 FITNESS_PARAMS = {}
 

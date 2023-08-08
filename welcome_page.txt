@@ -37,10 +37,12 @@ This steps are repeated until a certain end condition is met. Common end conditi
 
 
 Before we can start with the evolution process, we first must define the fitness function, initialize the population and define the gene pool.
-The fitness function we are going to use in this example takes as a parameter only the chromosome string and outputs a score between -1 and 1, 1 being the perfect solution.
+The fitness function we are going to use in this example takes as a parameter only the chromosome string and outputs a score between 0 and 1, 1 being the perfect solution.
 ```py
 def fitness(string):
-    return int(string)
+    max_length = 100
+    max_ = int('9'*max_length)
+    return int(string) / max_
 ```
 
 Once the fitness function is defined, we can define the gene pool. In this example, since we are trying to find a regex solution,
