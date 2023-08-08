@@ -46,12 +46,13 @@ END_CONDITIONS = {'Generational' : None}
 
 def geneticAlgorithmsPage():
 
-    with open('routes/welcome_page.txt') as file:
+    with open('welcome_page.txt') as file:
         welcome = file.read()
 
     st.markdown(welcome)
 
-    initialization_strategy = initializationStrategySelector(INITIALIZATIONS_STRATEGIES, GENES)
+    initialization_strategy_selector = InitializationSelector(GENES, INITIALIZATIONS_STRATEGIES)
+    initialization_strategy = initialization_strategy_selector.render()
 
     min_population_size = initialization_strategy.min_population_size
     max_population_size = initialization_strategy.max_population_size
@@ -59,7 +60,8 @@ def geneticAlgorithmsPage():
     max_chromosome_len = initialization_strategy.max_chromosome_length
 
     st.markdown("##### Selection strategy")
-    selection_strategy = selectionStrategySelector(SELECTION_STRATEGIES, fitness, FITNESS_PARAMS, min_population_size, max_population_size)
+    selection_strategy_selector = SelectionSelector(fitness, FITNESS_PARAMS, min_population_size, SELECTION_STRATEGIES)
+    selection_strategy = selection_strategy_selector.render()
 
     st.markdown("##### Crossover strategy")
     crossover_strategy = crossoverStrategySelector(CROSSOVER_STRATEGIES)
