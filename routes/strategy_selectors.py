@@ -52,19 +52,32 @@ def crossoverStrategySelector(crossover_strategies):
 
     return crossover_strategy
 
-def mutationStrategySelector(mutation_strategies, chromosome_min_length, chromosome_max_length):
+def mutationStrategySelector(mutation_strategies, chromosome_min_length, chromosome_max_length, gene_pool):
     with st.expander(label = 'Mutation strategy'):
         mutation_option = st.selectbox(label = 'Mutation Strategy', options = list(mutation_strategies.keys()))
         mutation_strategy = mutation_strategies[mutation_option]
 
         mutation_rate = st.slider(label = 'Mutation rate', min_value = 0.0, max_value = 1.0, step = 0.001, value = 0.05)
+        severeness = st.slider(label = 'Severeness', min_value = 0.0, max_value = 1.0, step = 0.001, value = 0.5)
 
-        if mutation_option == 'Pop':
+        if mutation_option == 'Delete':
             mutation_params = {'chromosome_min_length' : chromosome_min_length}
+
+        if mutation_option == 'Flip':
+            mutation_params = {'gene_pool' : gene_pool}
+
+        if mutation_option == 'Swap':
+            mutation_params = {}
+
+        if mutation_option == 'Inverse':
+            mutation_params = {}
         
         mutation_params['mutation_rate'] = mutation_rate
+        mutation_params['severeness'] = severeness
 
         mutation_strategy = mutation_strategy(**mutation_params)
+        
+        
 
     return mutation_strategy
 

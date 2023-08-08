@@ -40,7 +40,7 @@ GENES = '0123456789'
 INITIALIZATIONS_STRATEGIES = {'Random' : RandomInitialization}
 SELECTION_STRATEGIES = {'Tournament' : TournamentSelection, 'Roulette' : RouletteSelection}
 CROSSOVER_STRATEGIES = {'Uniform' : UniformCrossover, 'One Point' : OnePointCrossover, 'Two Points' : TwoPointCrossover}
-MUTATION_STRATEGIES = {'Pop' : PopMutation}
+MUTATION_STRATEGIES = {'Delete' : DeleteMutation, 'Flip' : FlipMutation, 'Swap' : SwapMutation, 'Inverse' : InverseMutation}
 REPLACEMENT_STRATEGIES = {'Total' : TotalReplacement}
 END_CONDITIONS = {'Generational' : None}
 
@@ -65,7 +65,7 @@ def geneticAlgorithmsPage():
     crossover_strategy = crossoverStrategySelector(CROSSOVER_STRATEGIES)
 
     st.markdown("##### Mutation strategy")
-    mutation_strategy = mutationStrategySelector(MUTATION_STRATEGIES, min_chromosome_len, max_chromosome_len)
+    mutation_strategy = mutationStrategySelector(MUTATION_STRATEGIES, min_chromosome_len, max_chromosome_len, GENES)
 
     st.markdown("##### Replacement strategy")
     replacement_strategy = replacementStrategySelector(REPLACEMENT_STRATEGIES)
@@ -88,3 +88,4 @@ def geneticAlgorithmsPage():
         gen.train(n_generations = n_generations)
 
         st.dataframe(data = [gen.bestIndividual, gen.bestScore])
+        st.dataframe(data = [gen.medianIndividual, gen.medianScore])
