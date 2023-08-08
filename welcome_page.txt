@@ -1,0 +1,52 @@
+# Welcome to Genetic Algorithms 101!
+
+If you're curious about machine learning and genetic algorithms, you're in the **right** place.
+Here, you'll embark on a journey to understand the fundamentals of genetic algorithms.
+By the end, not only will you have a solid grasp of the theory behind them, 
+but you'll also interact with tools and strategies essential for their effective implementation.
+
+### What are genetic algorithms?
+
+In machine learning, a **genetic algorithm** is a search heuristic that mirrors the process of natural evolution. These algorithms are often employed to solve challenging optimization and search problems. They are especially useful when dealing with problems of NP complexity, however they can be a good tool for solving P compexity problems too.
+Central to the concept of genetic algorithms is the **fitness function**, which is basically a scoring mechanism. Given a chromosome (a representation of a solution), the fitness function assigns a score that represents how 'fit' or 'suitable' that solution is in addressing the specific problem.
+If we think of genetic algorithms as optimization tools, the problem can be defined as maximizing the output of the fitness function.
+If we want the fitness function to work we also need to define a gene pool and initialize a population of individuals.
+
+- The gene pool is the set of all possible genes that a chromosome can have. It's the 'genetic material' available for constructing solutions.       
+- A population, on the other hand, is an array of multiple individuals. Most commonly, it is initalized at random, but always within the constraints of the gene pool and the predefined minimum and maximum chromosome lengths.
+
+
+Once the problem is defined and we have a population to work with, we can start evolving the population.
+
+Genetic algorithms mimic evolution by natural selection, and this is evident in their iterative process, so here's a breakdown:
+
+1. **Selection**: Identifying and selecting the fittest individuals from a population to serve as parents for generating the next generation.
+2. **Crossover**: Combining two parents to produce offspring. This simulates the genetic crossover observed in nature.
+3. **Mutation**: Introducing small, random changes in an offspring's chromosome to ensure genetic diversity.
+4. **Replacement**: Deciding how the next generation is formed using the parents and the offspring.
+
+This steps are repeated until a certain end condition is met. Common end conditions include:
+
+- A solution meeting a specific fitness threshold.
+- A set number of generations reached.
+- The fitness level has plateaued, meaning there's no significant improvement over several generations.
+
+---
+
+### Let's build a genetic algorithm!
+
+
+Before we can start with the evolution process, we first must define the fitness function, initialize the population and define the gene pool.
+The fitness function we are going to use in this example takes as a parameter only the chromosome string and outputs a score between -1 and 1, 1 being the perfect solution.
+```py
+def fitness(string):
+    return int(string)
+```
+
+Once the fitness function is defined, we can define the gene pool. In this example, since we are trying to find a regex solution,
+we are going to fill the gene pool with all possible characters that could be used in a regular expression:
+```py
+GENES = '0123456789'
+```
+Now we are finally ready to initialize the population and deploy different strategies for the evolutionary process.
+
