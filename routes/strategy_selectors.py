@@ -1,5 +1,21 @@
 import streamlit as st
 
+def initializationStrategySelector(initialization_strategies, gene_pool):
+    with st.expander(label = 'Intialization strategy'):
+        initialization_option = st.selectbox(label = 'Initialization Strategy', options = list(initialization_strategies.keys()))
+        initialization_strategy = initialization_strategies[initialization_option]
+
+        if initialization_option == 'Random':
+            min_chromosome_len = st.slider(label = 'Minimum length', min_value = 1, max_value = 100, value = 1)
+            max_chromosome_len = st.slider(label = 'Maximum length', min_value = 1, max_value = 100, value = 100)
+            min_population_size = st.slider(label = 'Minimum size', min_value = 50, max_value = 500, value = 50)
+            max_population_size = st.slider(label = 'Maximum size', min_value = 50, max_value = 500, value = min_population_size)
+            initialization_params = {'gene_pool' : gene_pool, 'min_population_size' : min_population_size, 'max_population_size' : max_population_size,
+                                     'min_chromosome_length' : min_chromosome_len, 'max_chromosome_length' : max_chromosome_len,
+                                     }
+        initialization_strategy = initialization_strategy(**initialization_params)
+    return initialization_strategy
+
 def selectionStrategySelector(selection_strategies, fitness, fitness_params, min_population_size, max_population_size):
     with st.expander(label = 'Selection strategy'):
         selection_option = st.selectbox(label = 'Selection Strategy', options = list(selection_strategies.keys()))

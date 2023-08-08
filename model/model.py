@@ -83,12 +83,14 @@ class GeneticAlgorithm:
     def train(self, n_generations):
         for n in range(n_generations):            
             self.bestIndividual = self.currentPopulation[0]
-            self.medianIndividual = self.currentPopulation[self.populationSize//2]
+            self.bestScore = self.fitness(self.bestIndividual, **self.fitness_params)
+            self.medianIndividual = self.currentPopulation[len(self.currentPopulation)//2]
+            self.medianScore = self.fitness(self.medianIndividual, **self.fitness_params)
 
             self._replacement()
             
             self._sortPopulation()
 
-            self.logger.log()
+            #self.logger.log()
 
             self.generation += 1

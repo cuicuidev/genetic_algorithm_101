@@ -1,8 +1,12 @@
 import streamlit as st
 import re
 from model.model import GeneticAlgorithm
+from model.strategies.crossover import *
+from model.strategies.initialization import *
+from model.strategies.mutation import *
+from model.strategies.replacement import *
+from model.strategies.selection import *
 from routes.strategy_selectors import *
-from model.strategies.strategies import *
 
 from test_cases import TEST_CASES
 
@@ -33,10 +37,12 @@ GENES = '0123456789'
 
 ###################3
 
+INITIALIZATIONS_STRATEGIES = {'Random' : RandomInitialization}
 SELECTION_STRATEGIES = {'Tournament' : TournamentSelection, 'Roulette' : RouletteSelection}
 CROSSOVER_STRATEGIES = {'Uniform' : UniformCrossover, 'One Point' : OnePointCrossover, 'Two Points' : TwoPointCrossover}
 MUTATION_STRATEGIES = {'Pop' : PopMutation}
 REPLACEMENT_STRATEGIES = {'Total' : TotalReplacement}
+END_CONDITIONS = {'Generational' : None}
 
 def geneticAlgorithmsPage():
 
@@ -44,13 +50,13 @@ def geneticAlgorithmsPage():
         welcome = file.read()
 
     st.markdown(welcome)
-    min_chromosome_len = st.slider(label = 'Minimum length', min_value = 1, max_value = 100, value = 1)
-    max_chromosome_len = st.slider(label = 'Maximum length', min_value = 1, max_value = 100, value = 100)
 
-    st.markdown("Now that we've stated the problem, it's time to choose strategies for selection, crossover, mutation and replacement. But first, let's define the minimum and maximum population size")
+    initialization_strategy = initializationStrategySelector(INITIALIZATIONS_STRATEGIES, GENES)
 
-    min_population_size = st.slider(label = 'Minimum size', min_value = 50, max_value = 500, value = 50)
-    max_population_size = st.slider(label = 'Maximum size', min_value = 50, max_value = 500, value = min_population_size)
+    min_population_size = initialization_strategy.min_population_size
+    max_population_size = initialization_strategy.max_population_size
+    min_chromosome_len = initialization_strategy.min_chromosome_length
+    max_chromosome_len = initialization_strategy.max_chromosome_length
 
     st.markdown("##### Selection strategy")
     selection_strategy = selectionStrategySelector(SELECTION_STRATEGIES, fitness, FITNESS_PARAMS, min_population_size, max_population_size)
@@ -64,9 +70,7 @@ def geneticAlgorithmsPage():
     st.markdown("##### Replacement strategy")
     replacement_strategy = replacementStrategySelector(REPLACEMENT_STRATEGIES)
 
-    model_params = {'populationSize' : min_population_size,
-            'chromosomeMinLength' : min_chromosome_len,
-            'chromosomeMaxLength' : max_chromosome_len,
+    model_params = {'initializationStrategy' : initialization_strategy,
             'selectionStrategy' : selection_strategy,
             'crossoverStrategy' : crossover_strategy,
             'mutationStrategy' : mutation_strategy,
@@ -83,4 +87,4 @@ def geneticAlgorithmsPage():
         gen.initPopulation()
         gen.train(n_generations = n_generations)
 
-        st.dataframe(data = gen.historyToPandas())
+        st.dataframe(data = [gen.bestIndividual, gen.bestScore])
