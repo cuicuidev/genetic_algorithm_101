@@ -1,4 +1,4 @@
-# Genetic Algorithms 101
+# [Genetic Algorithms 101](https://genetic-algorithms-101.streamlit.app/)
 A [Streamlit](https://streamlit.io/) webapp where people can learn and try out genetic algorithms!
 
 ### About
