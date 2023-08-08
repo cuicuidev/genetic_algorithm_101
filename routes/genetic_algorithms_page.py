@@ -1,8 +1,8 @@
 import streamlit as st
 import re
-from model import GeneticAlgorithm
+from model.model import GeneticAlgorithm
 from routes.strategy_selectors import *
-from strategies import *
+from model.strategies.strategies import *
 
 from test_cases import TEST_CASES
 
