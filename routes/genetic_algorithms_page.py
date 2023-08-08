@@ -53,20 +53,20 @@ def geneticAlgorithmsPage():
 
     st.markdown(welcome)
 
-    initialization_strategy = InitializationSelector(GENES, INITIALIZATIONS_STRATEGIES).render()
+    initialization_strategy = InitializationSelector(GENES, INITIALIZATIONS_STRATEGIES, expander = False).render()
 
     min_population_size = initialization_strategy.min_population_size
     max_population_size = initialization_strategy.max_population_size
     min_chromosome_len = initialization_strategy.min_chromosome_length
     max_chromosome_len = initialization_strategy.max_chromosome_length
 
-    selection_strategy = SelectionSelector(fitness, FITNESS_PARAMS, min_population_size, SELECTION_STRATEGIES).render()
+    selection_strategy = SelectionSelector(fitness, FITNESS_PARAMS, min_population_size, SELECTION_STRATEGIES, expander = False).render()
 
-    crossover_strategy = CrossoverSelector(CROSSOVER_STRATEGIES).render()
+    crossover_strategy = CrossoverSelector(CROSSOVER_STRATEGIES, expander = False).render()
 
-    mutation_strategy = MutationSelector(GENES, min_chromosome_len, MUTATION_STRATEGIES).render()
+    mutation_strategy = MutationSelector(GENES, min_chromosome_len, MUTATION_STRATEGIES, expander = False).render()
 
-    replacement_strategy = ReplacementSelector(REPLACEMENT_STRATEGIES).render()
+    replacement_strategy = ReplacementSelector(REPLACEMENT_STRATEGIES, expander = False).render()
 
     model_params = {'initializationStrategy' : initialization_strategy,
             'selectionStrategy' : selection_strategy,
