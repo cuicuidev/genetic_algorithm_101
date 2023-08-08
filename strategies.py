@@ -4,7 +4,7 @@ import random
 class Strategy(ABC):
 
     @abstractmethod
-    def apply(self, **kwargs):
+    def apply(self):
         pass
 
 class SelectionStrategy(Strategy):
@@ -55,10 +55,40 @@ class TournamentSelection(SelectionStrategy):
                 best_score = score
         return best
 
-class BinaryUniformCrossover(CrossoverStrategy):
+class RouletteSelection(SelectionStrategy):
+    def __init__(self, fitness, fitness_params, total_pairs):
+        self.fitness = fitness
+        self.fitness_params = fitness_params
+        self.total_pairs = total_pairs
+
+    def apply(self, population):
+        return self._getPairs(population)
     
-    def __init__(self, anti_twins = True):
-        self.anti_twins = anti_twins
+    def _getPairs(self, population):
+        parents = []
+        for i in range(self.total_pairs):
+            parent1, parent2 = self._getOnePair(population)
+            parents.append((parent1, parent2))
+        return parents
+
+    def _getOnePair(self, population):
+        parent1 = self._roulette(population)
+        parent2 = self._roulette(population)
+        return parent1, parent2
+
+    def _roulette(self, population):
+        total_fitness = sum(self.fitness(string=individual, **self.fitness_params) for individual in population)
+        pick = random.uniform(0, total_fitness)
+        current = 0
+        for individual in population:
+            current += self.fitness(string=individual, **self.fitness_params)
+            if current > pick:
+                return individual
+
+class UniformCrossover(CrossoverStrategy):
+    
+    def __init__(self, binary = True):
+        self.binary = binary
 
     def apply(self, parents):
         return self._getChildren(parents)
@@ -66,29 +96,83 @@ class BinaryUniformCrossover(CrossoverStrategy):
     def _getChildren(self, parents):
         children = []
         for parent1, parent2 in parents:
-            children.extend(self._uniformBinary(parent1, parent2))
+            children.extend(self._uniform(parent1, parent2))
         return children
     
-    def _uniformBinary(self, parent1, parent2):
+    def _uniform(self, parent1, parent2):
+        max_length = max(len(parent1), len(parent2))
         child1 = []
-        if self.anti_twins:
-            child2 = []
-        parent1_ = [x for x in parent1]
-        parent2_ = [x for x in parent2]
-        for gen1, gen2 in zip(parent1_, parent2_): #TODO: take into account the length of both parents!!!
+        child2 = [] if self.binary else None
+
+        for i in range(max_length): 
+            gen1 = parent1[i % len(parent1)]
+            gen2 = parent2[i % len(parent2)]
+
             if random.randint(0, 1):
                 child1.append(gen1)
-                if self.anti_twins:
+                if self.binary:
                     child2.append(gen2)
             else:
                 child1.append(gen2)
-                if self.anti_twins:
+                if self.binary:
                     child2.append(gen1)
+
         child1 = ''.join(child1)
-        if self.anti_twins:
+        if self.binary:
             child2 = ''.join(child2)
 
-        return [child1, child2] if self.anti_twins else [child1]
+        return [child1, child2] if self.binary else [child1]
+
+class OnePointCrossover(CrossoverStrategy):
+    
+    def __init__(self, binary=True):
+        self.binary = binary
+
+    def apply(self, parents):
+        return self._getChildren(parents)
+    
+    def _getChildren(self, parents):
+        children = []
+        for parent1, parent2 in parents:
+            children.extend(self._crossover(parent1, parent2))
+        return children
+    
+    def _crossover(self, parent1, parent2):
+        min_length = min(len(parent1), len(parent2))
+        
+        crossover_point = random.randint(1, min_length-1)
+        
+        child1 = parent1[:crossover_point] + parent2[crossover_point:min_length]
+        if self.binary:
+            child2 = parent2[:crossover_point] + parent1[crossover_point:min_length]
+            return [child1, child2]
+        return [child1]
+
+class TwoPointCrossover(CrossoverStrategy):
+    
+    def __init__(self, binary=True):
+        self.binary = binary
+
+    def apply(self, parents):
+        return self._getChildren(parents)
+    
+    def _getChildren(self, parents):
+        children = []
+        for parent1, parent2 in parents:
+            children.extend(self._crossover(parent1, parent2))
+        return children
+    
+    def _crossover(self, parent1, parent2):
+        min_length = min(len(parent1), len(parent2))
+        
+        point1, point2 = sorted(random.sample(range(1, min_length), 2))
+        
+        child1 = parent1[:point1] + parent2[point1:point2] + parent1[point2:min_length]
+        if self.binary:
+            child2 = parent2[:point1] + parent1[point1:point2] + parent2[point2:min_length]
+            return [child1, child2]
+        return [child1]
+
 
 class PopMutation(MutationStrategy):
     

@@ -1,5 +1,4 @@
 import streamlit as st
-from routes.a_simple_example_page import aSimpleExamplePage
 from routes.genetic_algorithms_page import geneticAlgorithmsPage
 from routes.playground_page import playgroundPage
 from routes.about_page import aboutPage
@@ -15,7 +14,6 @@ def main():
 
     pages = {
         "Genetic Algorithms": geneticAlgorithmsPage,
-        "A Simple Example": aSimpleExamplePage,
         "Playground": playgroundPage,
         "About": aboutPage
     }

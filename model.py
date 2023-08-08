@@ -69,8 +69,8 @@ class GeneticAlgorithm:
     def _sortPopulation(self):
         self._evaluatePopulation()
         sorted_population, sorted_fitness_scores = zip(*sorted(zip(self.currentPopulation, self.currentFitnessScores), key=lambda x: x[1]))
-        self.currentPopulation = list(sorted_population)
-        self.currentScores = list(sorted_fitness_scores)
+        self.currentPopulation = list(sorted_population)[::-1]
+        self.currentScores = list(sorted_fitness_scores)[::-1]
         
     ################################### MAIN ALGORITHM LOGIC
 
@@ -107,16 +107,17 @@ class GeneticAlgorithm:
         self.history['params'].append(params)
     
     def train(self, n_generations):
-        for n in range(n_generations):
+        for n in range(n_generations):            
+            self.bestIndividual = self.currentPopulation[0]
+            self.medianIndividual = self.currentPopulation[self.populationSize//2]
+
             self._replacement()
             
             self._sortPopulation()
             
-            self.bestIndividual = self.currentPopulation[0]
-            self.medianIndividual = self.currentPopulation[self.populationSize//2]
-            self.generation += 1
-            
             self._logHistory()
+
+            self.generation += 1
         
     def historyToPandas(self):
         return pd.DataFrame(self.history)

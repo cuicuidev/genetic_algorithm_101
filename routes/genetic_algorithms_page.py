@@ -1,23 +1,86 @@
 import streamlit as st
+import re
+from model import GeneticAlgorithm
+from routes.strategy_selectors import *
+from strategies import *
+
+from test_cases import TEST_CASES
+
+# def fitness(string, test_cases):
+#     iters = len(test_cases)
+    
+#     score = 0
+#     try:
+#         for key, value in test_cases.items():
+#             score += int(bool(re.match(string, key)) == value)
+#     except:
+#         return -1
+#     return score / iters
+
+# FITNESS_PARAMS = {'test_cases' : TEST_CASES}
+
+# GENES = ''.join([chr(x) for x in range(32,126)])
+
+
+###################3
+
+def fitness(string):
+    return int(string)
+
+FITNESS_PARAMS = {}
+
+GENES = '0123456789'
+
+###################3
+
+SELECTION_STRATEGIES = {'Tournament' : TournamentSelection, 'Roulette' : RouletteSelection}
+CROSSOVER_STRATEGIES = {'Uniform' : UniformCrossover, 'One Point' : OnePointCrossover, 'Two Points' : TwoPointCrossover}
+MUTATION_STRATEGIES = {'Pop' : PopMutation}
+REPLACEMENT_STRATEGIES = {'Total' : TotalReplacement}
 
 def geneticAlgorithmsPage():
-    st.title('Welcome!')
 
-    st.write("If you are curious about machine learning and genetic algorithms, this is the rigth place for you. \
-             Here you will learn everything you need to know to get started with genetic algorithms, so you can confidently design your own. \
-             Not only you will walk out with good understanding of genetic algorithms, but also you will get a chance to play and interact \
-             with an algorithm I've build for this site.")
+    with open('routes/welcome_page.txt') as file:
+        welcome = file.read()
+
+    st.markdown(welcome)
+    min_chromosome_len = st.slider(label = 'Minimum length', min_value = 1, max_value = 100, value = 1)
+    max_chromosome_len = st.slider(label = 'Maximum length', min_value = 1, max_value = 100, value = 100)
+
+    st.markdown("Now that we've stated the problem, it's time to choose strategies for selection, crossover, mutation and replacement. But first, let's define the minimum and maximum population size")
+
+    min_population_size = st.slider(label = 'Minimum size', min_value = 50, max_value = 500, value = 50)
+    max_population_size = st.slider(label = 'Maximum size', min_value = 50, max_value = 500, value = min_population_size)
+
+    st.markdown("##### Selection strategy")
+    selection_strategy = selectionStrategySelector(SELECTION_STRATEGIES, fitness, FITNESS_PARAMS, min_population_size, max_population_size)
+
+    st.markdown("##### Crossover strategy")
+    crossover_strategy = crossoverStrategySelector(CROSSOVER_STRATEGIES)
+
+    st.markdown("##### Mutation strategy")
+    mutation_strategy = mutationStrategySelector(MUTATION_STRATEGIES, min_chromosome_len, max_chromosome_len)
+
+    st.markdown("##### Replacement strategy")
+    replacement_strategy = replacementStrategySelector(REPLACEMENT_STRATEGIES)
+
+    model_params = {'populationSize' : min_population_size,
+            'chromosomeMinLength' : min_chromosome_len,
+            'chromosomeMaxLength' : max_chromosome_len,
+            'selectionStrategy' : selection_strategy,
+            'crossoverStrategy' : crossover_strategy,
+            'mutationStrategy' : mutation_strategy,
+            'replacementStrategy' : replacement_strategy,
+            }
     
-    st.write("#### What are genetic algorithms?")
-    st.write("In machine learning, a genetic algorithm is a heuristic algorithm inspired in the theory of evolution by natural selection. \
-             Genetic algorithms are used to solve optimization problems and they are a great choice when the problem in question is of NP complexity, \
-             but can be used for P complexity problems too.")
-    st.write("Exactly as evolution occurs in nature, a genetic algorithm is aimed to simulate the process. When creating such an algorithm, we must have a population \
-             (which often is initialized at random) and an environment (known as fitness function) that shapes the population over many generations. The population \
-             is composed of individuals (potential solutions to the problem) that can reproduce to generate offspring. The offspring then may or may not \
-             mutate, depending on a mutation chance specified beforehand. At last, a new generation is created with the offspring, and the whole process is repeated \
-             again as many times as specified. Over time, the population converges to gradually better and better solutions to the problem.")
-    st.write("An individual is defined by its chromosome. A chromosome is an array of elements (genes) that describe a unique solution to the problem. Let's define a problem, \
-             for instance: We want to find the best way to pack a travel bag with items of different values, such that the items contained in the bag are of the \
-             highest value possible. The bag can only hold a limited number of items, so we must choose which ones we want to keep and which ones will be discarted. \
-             A chromosome would be an array of items and each item would be a gene.")
+    st.markdown("##### End condition")
+    with st.expander(label = 'Number of generations'):
+        n_generations = st.slider(label = 'Generations', min_value = 1, max_value = 1000, value = 100)
+
+    if st.button(label = 'Train'):
+        gen = GeneticAlgorithm(fitness = fitness, fitness_params = FITNESS_PARAMS, genes = GENES)
+        gen.setParams(**model_params)
+        gen.initPopulation()
+        gen.train(n_generations = n_generations)
+
+        st.dataframe(data = gen.historyToPandas())
