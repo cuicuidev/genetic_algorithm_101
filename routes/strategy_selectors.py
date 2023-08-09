@@ -29,9 +29,6 @@ class InitializationSelector(StrategySelector):
         super().__init__(strategies, descriptions, expander, expanded, label)
         self.gene_pool = gene_pool
 
-    def _expander(self):
-        return super()._expander()
-
     def _selector(self):
 
         if self.descriptions:
@@ -76,9 +73,6 @@ class SelectionSelector(StrategySelector):
         self.fitness = fitness
         self.fitness_params = fitness_params
         self.min_population_size = min_population_size
-
-    def _expander(self):
-        return super()._expander()
     
     def _selector(self):
         option = st.selectbox(label = 'Select strategy', options = list(self.strategies.keys()))
@@ -98,9 +92,6 @@ class CrossoverSelector(StrategySelector):
 
     def __init__(self, strategies, descriptions = True, expander = True, expanded = False, label = 'Crossover'):
         super().__init__(strategies, descriptions, expander, expanded, label)
-
-    def _expander(self):
-        return super()._expander()
 
     def _selector(self):
         option = st.selectbox(label = 'Select strategy', options = list(self.strategies.keys()))
@@ -122,9 +113,6 @@ class MutationSelector(StrategySelector):
         super().__init__(strategies, descriptions, expander, expanded, label)
         self.gene_pool = gene_pool
         self.min_chromosome_length = min_chromosome_length
-    
-    def _expander(self):
-        return super()._expander()
 
     def _selector(self):
         option = st.selectbox(label = 'Select strategy', options = list(self.strategies.keys()))
@@ -148,9 +136,6 @@ class ReplacementSelector(StrategySelector):
 
     def __init__(self, strategies, descriptions = True, expander = True, expanded = False, label = 'Replacement'):
         super().__init__(strategies, descriptions, expander, expanded, label)
-
-    def _expander(self):
-        return super()._expander()
 
     def _selector(self):
         option = st.selectbox(label = 'Select strategy', options = list(self.strategies.keys()))
